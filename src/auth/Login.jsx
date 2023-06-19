@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../contexts/AuthContext";
 
 const Login = () => {
-  const { login, isAuthChecked } = useAuth();
+  const { login, isAuthChecked, error } = useAuth();
 
   const navigate = useNavigate();
 
@@ -17,26 +17,30 @@ const Login = () => {
 
   const [remember, setRemember] = useState(false);
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     const { email, password } = data;
-
-    await login(email, password, remember);
-
-    // Redirect to the dashboard page after successful login
-    navigate("/dashboard");
+    login(email, password, remember);
   };
 
   const handleRememberChange = (event) => {
     const { checked } = event.target;
     setRemember(checked);
-
-    // Set the "remember" value in the form data using setValue
     setValue("remember", checked);
   };
 
   return !isAuthChecked ? (
     <div>
       <h2>Login</h2>
+
+      {error && error.errors && (
+        <div>
+          {Object.keys(error.errors).map((key) => (
+            <p key={key}>{error.errors[key][0]}</p>
+          ))}
+          {/* {error.message && <p>{error.message}</p>} */}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label>Email:</label>

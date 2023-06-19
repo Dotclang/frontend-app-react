@@ -1,23 +1,16 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import Spinner from "../components/Spinner";
 
-const ProtectedRoute = ({ children, ...rest }) => {
-  const { user, isAuthChecked } = useAuth();
+const ProtectedRoute = () => {
+  const { isLoading, isAuthChecked, user } = useAuth();
 
-  if (!isAuthChecked) {
-    // Render a loading spinner or any other UI indication while the authentication status is being checked
-    return <Spinner />;
+  if (isLoading) {
+    return <Spinner text="Loading..." />;
   }
-  console.log(rest);
 
-  return user ? (
-    // <Route {...rest} element={children} />
-    <>{children}</>
-  ) : (
-    <Navigate to="/login" replace />
-  );
+  return isAuthChecked && user ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;

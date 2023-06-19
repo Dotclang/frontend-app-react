@@ -9,9 +9,7 @@ const Dashboard = () => {
   const handleLogoutClick = async () => {
     // Call the handleLogout function from the AuthContext
     await logout();
-    navigate("/login");
-
-    // Perform any additional logout-related actions, such as redirecting to a login page
+    navigate("/");
   };
 
   return (
