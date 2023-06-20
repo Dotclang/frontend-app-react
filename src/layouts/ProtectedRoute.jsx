@@ -4,13 +4,13 @@ import { useAuth } from "../contexts/AuthContext";
 import Spinner from "../components/Spinner";
 
 const ProtectedRoute = () => {
-  const { isLoading, isAuthChecked, user } = useAuth();
+  const { isLoading, isAuthChecked } = useAuth();
 
   if (isLoading) {
     return <Spinner text="Loading..." />;
   }
 
-  return isAuthChecked && user ? <Outlet /> : <Navigate to="/login" replace />;
+  return isAuthChecked ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;

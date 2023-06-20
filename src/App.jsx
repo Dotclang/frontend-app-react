@@ -11,6 +11,8 @@ import Profile from "./auth/Profile";
 import NotFound from "./pages/errors/NotFound";
 import "./App.css";
 
+const canResetPassword = import.meta.env.VITE_APP_CAN_RESET_PASSWORD === "true";
+
 const App = () => {
   return (
     <AuthProvider>
@@ -18,7 +20,10 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route element={<GuestRoute />}>
-            <Route path="/login" element={<Login />} />
+            <Route
+              path="/login"
+              element={<Login canResetPassword={canResetPassword} />}
+            />
             <Route path="/register" element={<Register />} />
           </Route>
           <Route element={<ProtectedRoute />}>
