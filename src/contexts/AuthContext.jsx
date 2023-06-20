@@ -8,6 +8,11 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState("");
   const [isAuthChecked, setAuthChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState(null);
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, [isAuthChecked]);
 
   const csrfToken = () => apiBackend.get("/sanctum/csrf-cookie");
 
@@ -30,7 +35,6 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     setIsLoading(true);
-    await csrfToken();
     await apiBackend
       .post("/logout")
       .then((res) => {
@@ -67,6 +71,51 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
+  const forgotPassword = async ({ email }) => {
+    setIsLoading(true);
+    setStatus(null);
+    await apiBackend
+      .post("/forgot-password", { email })
+      .then((res) => {
+        setStatus(res.data.status);
+      })
+      .catch((err) => {
+        setError(err.response.data);
+        console.log("Forgot password failed:", err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const resetPassword = async ({
+    token,
+    email,
+    password,
+    password_confirmation,
+  }) => {
+    setIsLoading(true);
+    setStatus(null);
+    await apiBackend
+      .post("/reset-password", {
+        token,
+        email,
+        password,
+        password_confirmation,
+      })
+      .then((res) => {
+        setStatus(res.data.status);
+        console.log(res);
+      })
+      .catch((err) => {
+        setError(err.response.data);
+        console.log("Forgot password failed:", err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   const checkAuthStatus = async () => {
     setIsLoading(true);
     await apiBackend
@@ -85,19 +134,18 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
-  useEffect(() => {
-    checkAuthStatus();
-  }, [isAuthChecked]);
-
   const value = {
     user,
     error,
     isLoading,
     isAuthChecked,
+    status,
     login,
     logout,
+    forgotPassword,
     checkAuthStatus,
     registerUser,
+    resetPassword,
     setIsLoading,
   };
 

@@ -5,6 +5,8 @@ import ProtectedRoute from "./layouts/ProtectedRoute";
 import GuestRoute from "./layouts/GuestRoute";
 import Home from "./pages/Home";
 import Login from "./auth/Login";
+import ForgotPassword from "./auth/ForgotPassword";
+import ResetPassword from "./auth/ResetPassword";
 import Register from "./auth/Register";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./auth/Profile";
@@ -25,6 +27,8 @@ const App = () => {
               element={<Login canResetPassword={canResetPassword} />}
             />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/password-reset/:token" element={<ResetPassword />} />
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
