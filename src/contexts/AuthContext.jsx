@@ -11,13 +11,12 @@ export const AuthProvider = ({ children }) => {
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
-    console.count("useEffect rendered!");
-
     const controller = new AbortController();
 
     const fetchUser = async () => {
       try {
         setIsLoading(true);
+        console.count("useEffect rendered!");
 
         const response = await axios.get("/api/user", {
           signal: controller.signal,
