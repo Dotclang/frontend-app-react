@@ -65,14 +65,14 @@ export const AuthProvider = ({ children }) => {
     await axios
       .post("/logout")
       .then((res) => {
-        setUser({});
-        setIsAuthenticated(false);
+        console.log("Logout success!");
       })
       .catch((err) => {
-        setError(err.response.data);
         console.log("Logout failed:", err.message);
       })
       .finally(() => {
+        setUser({});
+        setIsAuthenticated(false);
         setIsLoading(false);
       });
   };
