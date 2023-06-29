@@ -5,9 +5,9 @@ import Spinner from "../components/Spinner";
 import ApplicationLogo from "../components/ApplicationLogo";
 
 const GuestRoute = () => {
-  const { isAuthChecked } = useAuth();
+  const { isAuthenticated } = useAuth();
 
-  if (isAuthChecked) return <Navigate to="/dashboard" replace />;
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
 
   return (
     <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">

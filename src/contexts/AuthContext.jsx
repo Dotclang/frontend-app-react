@@ -1,28 +1,55 @@
 import React, { createContext, useState, useEffect } from "react";
-import apiBackend from "../lib/axios";
+import axios from "../lib/axiosConfig";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   const [error, setError] = useState("");
-  const [isAuthChecked, setAuthChecked] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
-    checkAuthStatus();
-  }, [isAuthChecked]);
+    console.count("useEffect rendered!");
 
-  const csrfToken = () => apiBackend.get("/sanctum/csrf-cookie");
+    const controller = new AbortController();
+
+    const fetchUser = async () => {
+      try {
+        setIsLoading(true);
+
+        const response = await axios.get("/api/user", {
+          signal: controller.signal,
+        });
+        setUser(response.data);
+        setIsAuthenticated(true);
+      } catch (err) {
+        if (err.name == "CanceledError") console.log("Cancelled!");
+        else console.log("Fetch user failed!:", err.message);
+        setUser({});
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUser();
+
+    return () => {
+      controller.abort();
+    };
+  }, [user.id, user.name]);
+
+  const csrfToken = () => axios.get("/sanctum/csrf-cookie");
 
   const login = async ({ email, password, remember }) => {
     setIsLoading(true);
     await csrfToken();
-    await apiBackend
+    await axios
       .post("/login", { email, password, remember })
       .then((res) => {
-        setAuthChecked(true);
+        setIsAuthenticated(true);
       })
       .catch((err) => {
         setError(err.response.data);
@@ -35,11 +62,11 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     setIsLoading(true);
-    await apiBackend
+    await axios
       .post("/logout")
       .then((res) => {
-        setUser(null);
-        setAuthChecked(false);
+        setUser({});
+        setIsAuthenticated(false);
       })
       .catch((err) => {
         setError(err.response.data);
@@ -57,10 +84,10 @@ export const AuthProvider = ({ children }) => {
     password_confirmation,
   }) => {
     setIsLoading(true);
-    await apiBackend
+    await axios
       .post("/register", { email, password, name, password_confirmation })
       .then((res) => {
-        setAuthChecked(true);
+        setIsAuthenticated(true);
       })
       .catch((err) => {
         setError(err.response.data);
@@ -74,7 +101,7 @@ export const AuthProvider = ({ children }) => {
   const forgotPassword = async ({ email }) => {
     setIsLoading(true);
     setStatus(null);
-    await apiBackend
+    await axios
       .post("/forgot-password", { email })
       .then((res) => {
         setStatus(res.data.status);
@@ -96,7 +123,7 @@ export const AuthProvider = ({ children }) => {
   }) => {
     setIsLoading(true);
     setStatus(null);
-    await apiBackend
+    await axios
       .post("/reset-password", {
         token,
         email,
@@ -116,34 +143,15 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
-  const checkAuthStatus = async () => {
-    setIsLoading(true);
-    await apiBackend
-      .get("/api/user")
-      .then((res) => {
-        setUser(res.data);
-        setAuthChecked(true);
-      })
-      .catch((err) => {
-        console.log("Check Auth Failed:", err.response.data.message);
-        setUser(null);
-        setAuthChecked(false);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
-
   const value = {
     user,
     error,
     isLoading,
-    isAuthChecked,
+    isAuthenticated,
     status,
     login,
     logout,
     forgotPassword,
-    checkAuthStatus,
     registerUser,
     resetPassword,
     setIsLoading,
