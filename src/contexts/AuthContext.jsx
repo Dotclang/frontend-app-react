@@ -1,10 +1,15 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "../lib/axiosConfig";
+import {
+  signInWithGoogle,
+  userStateListener,
+  SignOutUser,
+} from "../lib/firebase";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
   const [error, setError] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +29,7 @@ export const AuthProvider = ({ children }) => {
       .catch((err) => {
         if (err.name == "CanceledError") console.log("Cancelled!");
         else console.log("Fetch user failed!:", err.message);
-        setUser({});
+        setUser(null);
         setIsAuthenticated(false);
       })
       .finally(() => {
@@ -36,7 +41,15 @@ export const AuthProvider = ({ children }) => {
 
   const login = async ({ email, password, remember }) => {
     setIsLoading(true);
-    await csrfToken();
+    const xsrfToken = document.cookie
+      .split("; ")
+      .find((cookie) => cookie.startsWith("XSRF-TOKEN"))
+      ?.split("=")[1];
+
+    if (!xsrfToken) {
+      await csrfToken();
+    }
+
     await axios
       .post("/login", { email, password, remember })
       .then((res) => {
@@ -53,17 +66,34 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     setIsLoading(true);
+    await SignOutUser();
     await axios
       .post("/logout")
       .then((res) => {
         console.log("Logout success!");
+        setUser(null);
+        setIsAuthenticated(false);
       })
       .catch((err) => {
         console.log("Logout failed:", err.message);
       })
       .finally(() => {
-        setUser({});
-        setIsAuthenticated(false);
+        setIsLoading(false);
+      });
+  };
+
+  const loginBackend = async ({ accessToken, remember }) => {
+    setIsLoading(true);
+    await axios
+      .post("/callback", { accessToken, remember })
+      .then((res) => {
+        setIsAuthenticated(true);
+      })
+      .catch((err) => {
+        setError(err.response.data);
+        console.log("Register failed:", err.message);
+      })
+      .finally(() => {
         setIsLoading(false);
       });
   };
@@ -142,7 +172,7 @@ export const AuthProvider = ({ children }) => {
     return () => {
       controller.abort();
     };
-  }, [user.id]);
+  }, [isAuthenticated]);
 
   const value = {
     user,
@@ -152,10 +182,14 @@ export const AuthProvider = ({ children }) => {
     status,
     login,
     logout,
+    csrfToken,
+    loginBackend,
     forgotPassword,
+    userStateListener,
     registerUser,
     resetPassword,
     setIsLoading,
+    signInWithGoogle,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

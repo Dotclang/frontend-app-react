@@ -2,9 +2,17 @@ import React from "react";
 
 const NotFound = () => {
   return (
-    <div className="relative sm:flex sm:justify-center text-slate-100 sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
-      <h2>Page Not Found</h2>
-      <p> The requested page does not exist.</p>
+    <div className="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
+      <div className="max-w-xl mx-auto sm:px-6 lg:px-8">
+        <div className="flex items-center pt-8 sm:justify-start sm:pt-0">
+          <div className="px-4 text-lg text-gray-500 border-r border-gray-400 tracking-wider">
+            <h5>405</h5>
+          </div>
+          <div className="ml-4 text-lg text-gray-500 uppercase tracking-wider">
+            <p> The requested page does not exist.</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

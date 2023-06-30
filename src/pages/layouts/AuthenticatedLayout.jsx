@@ -35,6 +35,9 @@ export default function Authenticated({ user, header, children }) {
                 >
                   Dashboard
                 </NavLink>
+                <NavLink to="/about" active={location.pathname === "/about"}>
+                  About Us
+                </NavLink>
               </div>
             </div>
 
@@ -66,7 +69,7 @@ export default function Authenticated({ user, header, children }) {
                   </Dropdown.Trigger>
 
                   <Dropdown.Content>
-                    <Dropdown.Link to="/profile/edit">Profile</Dropdown.Link>
+                    <Dropdown.Link to="/profile">Profile</Dropdown.Link>
                     <Dropdown.Link onClick={handleLogoutClick} as="button">
                       Log Out
                     </Dropdown.Link>
@@ -124,6 +127,12 @@ export default function Authenticated({ user, header, children }) {
             >
               Dashboard
             </ResponsiveNavLink>
+            <ResponsiveNavLink
+              href="/about"
+              active={location.pathname === "/about"}
+            >
+              About Us
+            </ResponsiveNavLink>
           </div>
 
           <div className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
@@ -137,7 +146,7 @@ export default function Authenticated({ user, header, children }) {
             </div>
 
             <div className="mt-3">
-              <ResponsiveNavLink href="profile/edit">Profile</ResponsiveNavLink>
+              <ResponsiveNavLink href="profile">Profile</ResponsiveNavLink>
               <ResponsiveNavLink onClick={handleLogoutClick} as="button">
                 Log Out
               </ResponsiveNavLink>

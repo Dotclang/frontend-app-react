@@ -1,43 +1,81 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
+import Spinner from "./components/Spinner";
 import ProtectedRoute from "./layouts/ProtectedRoute";
 import GuestRoute from "./layouts/GuestRoute";
 import Welcome from "./pages/Welcome";
-import Login from "./auth/Login";
-import ForgotPassword from "./auth/ForgotPassword";
-import ResetPassword from "./auth/ResetPassword";
-import Register from "./auth/Register";
-import Dashboard from "./pages/Dashboard";
-import Profile from "./auth/Profile";
 import NotFound from "./pages/errors/NotFound";
 import "./App.css";
 
 const canResetPassword = import.meta.env.VITE_APP_CAN_RESET_PASSWORD === "true";
 
+const Login = lazy(() => import("./auth/Login"));
+const Register = lazy(() => import("./auth/Register"));
+const ForgotPassword = lazy(() => import("./auth/ForgotPassword"));
+const ResetPassword = lazy(() => import("./auth/ResetPassword"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Profile = lazy(() => import("./auth/Profile"));
+
 const App = () => {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Welcome />} />
-          <Route element={<GuestRoute />}>
-            <Route
-              path="/login"
-              element={<Login canResetPassword={canResetPassword} />}
-            />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/password-reset/:token" element={<ResetPassword />} />
-          </Route>
-          <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />{" "}
-        </Routes>
-      </Router>
-    </AuthProvider>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Welcome />} />
+        <Route element={<GuestRoute />}>
+          <Route
+            path="/login"
+            element={
+              <Suspense fallback={<Spinner text="Loading..." />}>
+                <Login canResetPassword={canResetPassword} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <Suspense fallback={<Spinner text="Loading..." />}>
+                <Register />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <Suspense fallback={<Spinner text="Loading..." />}>
+                <ForgotPassword />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/password-reset/:token"
+            element={
+              <Suspense fallback={<Spinner text="Loading..." />}>
+                <ResetPassword />
+              </Suspense>
+            }
+          />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route
+            path="/dashboard"
+            element={
+              <Suspense fallback={<Spinner text="Loading..." />}>
+                <Dashboard />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <Suspense fallback={<Spinner text="Loading..." />}>
+                <Profile />
+              </Suspense>
+            }
+          />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
   );
 };
 

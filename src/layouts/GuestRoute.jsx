@@ -5,11 +5,15 @@ import Spinner from "../components/Spinner";
 import ApplicationLogo from "../components/ApplicationLogo";
 
 const GuestRoute = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
 
-  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
+  if (isLoading) {
+    return <Spinner text="Loading..." />;
+  }
 
-  return (
+  return isAuthenticated ? (
+    <Navigate to="/dashboard" replace />
+  ) : (
     <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
       <div>
         <Link to="/">
