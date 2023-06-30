@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
 
     await axios
       .post("/login", { email, password, remember })
-      .then((res) => {
+      .then(() => {
         setIsAuthenticated(true);
       })
       .catch((err) => {
@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }) => {
     await SignOutUser();
     await axios
       .post("/logout")
-      .then((res) => {
+      .then(() => {
         console.log("Logout success!");
         setUser(null);
         setIsAuthenticated(false);
@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(true);
     await axios
       .post("/callback", { accessToken, remember })
-      .then((res) => {
+      .then(() => {
         setIsAuthenticated(true);
       })
       .catch((err) => {
@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(true);
     await axios
       .post("/register", { email, password, name, password_confirmation })
-      .then((res) => {
+      .then(() => {
         setIsAuthenticated(true);
       })
       .catch((err) => {
