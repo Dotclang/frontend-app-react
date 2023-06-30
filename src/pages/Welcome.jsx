@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import "../assets/Styles.css";
+import { Helmet } from "react-helmet";
 
-const Welcome = () => {
+const Welcome = ({ header }) => {
   const { logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [processing, setProcessing] = useState(false);
@@ -27,14 +26,14 @@ const Welcome = () => {
             >
               Welcome
             </a>
-            <a
+            <button
               href="#"
               onClick={handleLogoutClick}
               disabled={processing}
               className="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
             >
               Log out
-            </a>
+            </button>
           </>
         ) : (
           <>

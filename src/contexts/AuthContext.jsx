@@ -10,35 +10,27 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [status, setStatus] = useState(null);
 
-  useEffect(() => {
-    const controller = new AbortController();
+  const fetchUser = (controller) => {
+    setIsLoading(true);
 
-    const fetchUser = async () => {
-      try {
-        setIsLoading(true);
-        console.count("useEffect rendered!");
-
-        const response = await axios.get("/api/user", {
-          signal: controller.signal,
-        });
-        setUser(response.data);
+    axios
+      .get("/api/user", {
+        signal: controller.signal,
+      })
+      .then((res) => {
+        setUser(res.data);
         setIsAuthenticated(true);
-      } catch (err) {
+      })
+      .catch((err) => {
         if (err.name == "CanceledError") console.log("Cancelled!");
         else console.log("Fetch user failed!:", err.message);
         setUser({});
         setIsAuthenticated(false);
-      } finally {
+      })
+      .finally(() => {
         setIsLoading(false);
-      }
-    };
-
-    fetchUser();
-
-    return () => {
-      controller.abort();
-    };
-  }, [user.id, user.name]);
+      });
+  };
 
   const csrfToken = () => axios.get("/sanctum/csrf-cookie");
 
@@ -107,7 +99,7 @@ export const AuthProvider = ({ children }) => {
       })
       .catch((err) => {
         setError(err.response.data);
-        console.log("Forgot password failed:", err);
+        console.log("Forgot password failed:", err.message);
       })
       .finally(() => {
         setIsLoading(false);
@@ -135,12 +127,22 @@ export const AuthProvider = ({ children }) => {
       })
       .catch((err) => {
         setError(err.response.data);
-        console.log("Forgot password failed:", err);
+        console.log("Forgot password failed:", err.message);
       })
       .finally(() => {
         setIsLoading(false);
       });
   };
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchUser(controller);
+
+    return () => {
+      controller.abort();
+    };
+  }, [user.id]);
 
   const value = {
     user,
