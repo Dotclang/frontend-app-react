@@ -1,6 +1,6 @@
 import React from "react";
-import { useAuth } from "../contexts/AuthContext";
-import Authenticated from "../pages/layouts/AuthenticatedLayout";
+import { useAuth } from "../../contexts/AuthContext";
+import Authenticated from "../../pages/layouts/AuthenticatedLayout";
 
 const Profile = () => {
   const { user } = useAuth();

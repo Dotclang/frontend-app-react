@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFirebase, setIsFirebase] = useState(false);
   const [status, setStatus] = useState(null);
 
   const fetchUser = (controller) => {

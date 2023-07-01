@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../contexts/AuthContext";
-import InputError from "../components/InputError";
-import PrimaryButton from "../components/PrimaryButton";
-import TextInput from "../components/TextInput";
+import { useAuth } from "../../contexts/AuthContext";
+import InputError from "../../components/InputError";
+import PrimaryButton from "../../components/PrimaryButton";
+import TextInput from "../../components/TextInput";
 
 export default function ForgotPassword() {
   const [isProccessing, setIsProccessing] = useState(false);

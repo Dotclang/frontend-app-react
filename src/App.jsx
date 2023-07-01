@@ -9,12 +9,12 @@ import "./App.css";
 
 const canResetPassword = import.meta.env.VITE_APP_CAN_RESET_PASSWORD === "true";
 
-const Login = lazy(() => import("./auth/Login"));
-const Register = lazy(() => import("./auth/Register"));
-const ForgotPassword = lazy(() => import("./auth/ForgotPassword"));
-const ResetPassword = lazy(() => import("./auth/ResetPassword"));
+const Login = lazy(() => import("./pages/auth/Login"));
+const Register = lazy(() => import("./pages/auth/Register"));
+const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
+const Profile = lazy(() => import("./pages/auth/Profile"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Profile = lazy(() => import("./auth/Profile"));
 
 const App = () => {
   return (

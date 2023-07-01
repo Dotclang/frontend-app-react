@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useParams } from "react-router-dom";
-import InputError from "../components/InputError";
-import InputLabel from "../components/InputLabel";
-import PrimaryButton from "../components/PrimaryButton";
-import TextInput from "../components/TextInput";
+import InputError from "../../components/InputError";
+import InputLabel from "../../components/InputLabel";
+import PrimaryButton from "../../components/PrimaryButton";
+import TextInput from "../../components/TextInput";
 
 function useQuery() {
   const { search } = useLocation();

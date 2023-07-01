@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/cpanel-username/public_html
+    - /bin/cp -R $BUILD_DIR/* $DEPLOYPATH
+  version: 2
