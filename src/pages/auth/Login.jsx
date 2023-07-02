@@ -7,9 +7,11 @@ import TextInput from "../../components/TextInput";
 import InputError from "../../components/InputError";
 import Checkbox from "../../components/Checkbox";
 import PrimaryButton from "../../components/PrimaryButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 const Login = ({ canResetPassword }) => {
-  const { login, error, signInWithGoogle } = useAuth();
+  const { login, error, signInWithGooglePopUp } = useAuth();
   const [remember, setRemember] = useState(false);
   const [isProccessing, setIsProccessing] = useState(false);
 
@@ -33,7 +35,7 @@ const Login = ({ canResetPassword }) => {
   };
 
   const handleLoginWithGoogle = () => {
-    signInWithGoogle();
+    signInWithGooglePopUp();
   };
 
   return (
@@ -100,11 +102,13 @@ const Login = ({ canResetPassword }) => {
           </PrimaryButton>
         </div>
       </form>
-      {/* <div className="flex items-center justify-center mt-4">
-        <PrimaryButton className="ml-4 w-full" onClick={handleLoginWithGoogle}>
-          Google
+      <hr className="mt-4" />
+      <div className="flex items-center justify-between mt-4">
+        <PrimaryButton className="w-full" onClick={handleLoginWithGoogle}>
+          <FontAwesomeIcon icon={faGoogle} className="w-8 h-8" />
+          <span className="ml-3">Google</span>
         </PrimaryButton>
-      </div> */}
+      </div>
     </>
   );
 };

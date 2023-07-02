@@ -3,7 +3,7 @@ import axios from "../lib/axiosConfig";
 import {
   signInWithGoogle,
   userStateListener,
-  SignOutUser,
+  signOutUser,
 } from "../lib/firebase";
 
 const AuthContext = createContext();
@@ -39,13 +39,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const csrfToken = () => axios.get("/sanctum/csrf-cookie");
+  const xsrfToken = document.cookie
+    .split("; ")
+    .find((cookie) => cookie.startsWith("XSRF-TOKEN"))
+    ?.split("=")[1];
 
   const login = async ({ email, password, remember }) => {
     setIsLoading(true);
-    const xsrfToken = document.cookie
-      .split("; ")
-      .find((cookie) => cookie.startsWith("XSRF-TOKEN"))
-      ?.split("=")[1];
 
     if (!xsrfToken) {
       await csrfToken();
@@ -67,11 +67,11 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     setIsLoading(true);
-    await SignOutUser();
     await axios
       .post("/logout")
       .then(() => {
         console.log("Logout success!");
+        signOutUser();
         setUser(null);
         setIsAuthenticated(false);
       })
@@ -83,7 +83,7 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
-  const loginBackend = async ({ accessToken, remember }) => {
+  const loginBackend = async ({ accessToken, remember = false }) => {
     setIsLoading(true);
     await axios
       .post("/callback", { accessToken, remember })
@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }) => {
       })
       .catch((err) => {
         setError(err.response.data);
-        console.log("Register failed:", err.message);
+        console.log("Login backend failed:", err.message);
       })
       .finally(() => {
         setIsLoading(false);
@@ -165,13 +165,53 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
+  const signInWithGooglePopUp = async () => {
+    try {
+      const res = await signInWithGoogle();
+
+      if (res.user?.accessToken) {
+        setIsFirebase(true);
+        const data = {
+          accessToken: res.user?.accessToken,
+          remember: false,
+        };
+        await loginBackend(data);
+      }
+      console.log(res.user);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // const unsubscribe = userStateListener((user) => {
+  //   if (user) {
+  //     user
+  //       .getIdToken()
+  //       .then(async (accessToken) => {
+  //         if (!xsrfToken) {
+  //           await csrfToken();
+  //         }
+  //         const res = await loginBackend(accessToken, false);
+  //         console.log(res.data);
+  //       })
+  //       .catch((err) => {
+  //         console.error("Listener", err);
+  //       })
+  //       .finally(() => {
+  //         setIsLoading(false);
+  //       });
+  //   }
+  // });
+
   useEffect(() => {
     const controller = new AbortController();
 
     fetchUser(controller);
 
+    // Clean up the observer when component unmounts
     return () => {
       controller.abort();
+      // if (isFirebase) unsubscribe();
     };
   }, [isAuthenticated]);
 
@@ -183,14 +223,13 @@ export const AuthProvider = ({ children }) => {
     status,
     login,
     logout,
-    csrfToken,
     loginBackend,
     forgotPassword,
-    userStateListener,
     registerUser,
     resetPassword,
     setIsLoading,
-    signInWithGoogle,
+    signInWithGooglePopUp,
+    // unsubscribe,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

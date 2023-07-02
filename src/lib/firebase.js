@@ -25,6 +25,6 @@ export const userStateListener = (callback) => {
   return onAuthStateChanged(auth, callback);
 };
 
-export const SignOutUser = () => {
+export const signOutUser = () => {
   signOut(auth);
 };
