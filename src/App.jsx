@@ -6,6 +6,7 @@ import GuestRoute from "./layouts/GuestRoute";
 import Welcome from "./pages/Welcome";
 import NotFound from "./pages/errors/NotFound";
 import "./App.css";
+import "@/assets/css/Styles.css";
 
 const canResetPassword = import.meta.env.VITE_APP_CAN_RESET_PASSWORD === "true";
 
