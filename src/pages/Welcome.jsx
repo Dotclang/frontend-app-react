@@ -52,7 +52,7 @@ const Welcome = () => {
         </div>
         <div className="max-w-7xl mx-auto p-6 lg:p-8">
           <div className="flex justify-center">
-            <ApplicationLogo className="h-16 w-auto bg-gray-100 dark:bg-gray-900 logo react" />
+            <ApplicationLogo className="h-16 w-auto logo react" />
           </div>
 
           <div className="flex justify-center mt-16">
