@@ -4,8 +4,7 @@ const cpanelYmlContent = `---
 deployment:
   tasks:
     - export DEPLOYPATH=/home/u629157071/public_html
-    - /bin/cp -R $BUILD_DIR/* $DEPLOYPATH
-    - /bin/cp package-lock.json $DEPLOYPATH
+    - /bin/cp -R $BUILD_DIR/* $DEPLOYPATH/frontend-app-react/
   version: 2
 `;
 
